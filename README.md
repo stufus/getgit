@@ -17,6 +17,7 @@ Essentially, the code performs the following steps:
 4. Once the pool is all done, use the API to go to the next page and continue.
 
 If you want to use HTTPS rather than SSH, change the code to use the https url. You would need to have an SSH key that works too, e.g. using ssh-agent.
+In other words, ```ssh_url_to_repo``` needs to change to ```http_url_to_repo```.
 
 # Bugs
 Probably, and you'll need to customise the code if you want to do anything different.
