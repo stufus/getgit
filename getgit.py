@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+# GetGIT - Gitlab environment clone
+# 
+# Stuart Morgan <stuart.morgan@withsecure.com> 2024
+# formerly MWR InfoSecurity
+#
 import requests
 import argparse
 import os
@@ -41,7 +46,7 @@ def get_project_list(current_page,args):
         next_page = int(r.headers['X-Next-Page'])
         current_page = int(r.headers['X-Page'])
     
-        print("*** Pool start")
+        print("*** Pool start (page " + str(current_page) + " of " + str(total_pages) + ")")
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=args['number_of_processes'])
 
         for project in r.json():
@@ -63,7 +68,7 @@ def get_project_list(current_page,args):
                     pool.submit(git_checkout,full_local_path, ssh_wiki_url)
 
         pool.shutdown(wait=True)
-        print("*** Pool finished")
+        print("*** Pool finished (page " + str(current_page) + " of " + str(total_pages) + ")")
 
         # If there's another page, visit it
         if (next_page > 0) and (next_page > current_page) and (next_page <= total_pages):
