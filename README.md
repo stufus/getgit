@@ -1,5 +1,5 @@
 # Summary
-This is a quick script which uses Gitlab APIs to list every project that a low privilege user has access to and either clone the repo or pull (to update changes). It has the effect of allowing you to easily keep a local copy up to date of every repo in an organisatoin.
+This is a quick script which uses Gitlab APIs to list every project that a low privilege user has access to and either clone the repo or pull (to update changes). It has the effect of allowing you to easily keep a local copy up to date of every repo in an organisation.
 
 If any project has a wiki, it will clone that too.
 
