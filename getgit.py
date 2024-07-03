@@ -29,8 +29,9 @@ def git_checkout(full_local_path,ssh_url):
         os.chdir(full_local_path)
         os.system("git pull --quiet")
         print("Pulled: " + full_local_path)
+    return
 
-def get_project_list(current_page,args):
+def get_project_list(current_page,args,pool):
     base_uri = args['base_uri']
     local_dir = args['local_directory']
     all_projects_headers = {
@@ -46,8 +47,7 @@ def get_project_list(current_page,args):
         next_page = int(r.headers['X-Next-Page'])
         current_page = int(r.headers['X-Page'])
     
-        print("*** Pool start (page " + str(current_page) + " of " + str(total_pages) + ")")
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=args['number_of_processes'])
+        print("*** Page start (page " + str(current_page) + " of " + str(total_pages) + ")")
 
         for project in r.json():
             ssh_url = project['ssh_url_to_repo']
@@ -67,12 +67,11 @@ def get_project_list(current_page,args):
                     ssh_wiki_url = re.sub('\.git$', '.wiki.git', ssh_url)
                     pool.submit(git_checkout,full_local_path, ssh_wiki_url)
 
-        pool.shutdown(wait=True)
-        print("*** Pool finished (page " + str(current_page) + " of " + str(total_pages) + ")")
+        print("*** Page end (page " + str(current_page) + " of " + str(total_pages) + ")")
 
         # If there's another page, visit it
         if (next_page > 0) and (next_page > current_page) and (next_page <= total_pages):
-            get_project_list(next_page,args)
+            get_project_list(next_page,args,pool)
 
 if __name__ == '__main__':
 
@@ -84,5 +83,8 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--number-of-processes', type=int, action='store', default=25, required=False, help='Number of parallel checkout processes (default: 25)')
     args = vars(parser.parse_args())
     current_page = 1
-    get_project_list(current_page,args)
+
+    pool = concurrent.futures.ThreadPoolExecutor(max_workers=args['number_of_processes'])
+    get_project_list(current_page,args,pool)
+    pool.shutdown(wait=True)
 

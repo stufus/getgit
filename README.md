@@ -14,7 +14,7 @@ Essentially, the code performs the following steps:
 1. Use the API to list the first page of projects that this token has access to
 2. Go through each project and either git clone or git pull. This works by adding the request to a concurrent pool which runs in multiple threads.
 3. Use the API to see if the wiki exists for that project. If so, git clone/git pull that too.
-4. Once the pool is all done, use the API to go to the next page and continue.
+4. Use the API to go to the next page and continue.
 
 If you want to use HTTPS rather than SSH, change the code to use the https url. You would need to have an SSH key that works too, e.g. using ssh-agent.
 In other words, ```ssh_url_to_repo``` needs to change to ```http_url_to_repo```.
